@@ -429,7 +429,7 @@ class FlappyEnv(gym.Env):
 
 
 
-def learn(name = "default", alg = "PPO", episodes = 200, timestamps = 100000, verbose = 1):
+def learn(name = "default", alg = "PPO", episodes = 10, timestamps = 1000, verbose = 1):
 	env = FlappyEnv()
 	env.reset()
 
