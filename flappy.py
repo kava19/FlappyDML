@@ -197,7 +197,7 @@ class FlappyEnv(gym.Env):
 		super().__init__()
 
 		self.action_space = spaces.Discrete(2)
-		self.observation_space = spaces.Box(low=-800.0, high=800.0, shape=(4,), dtype=np.float64)
+		self.observation_space = spaces.Box(low=-800.0, high=800.0, shape=(4,), dtype=np.float32)
 
 		self.window_width = 800
 		self.window_height = 600
@@ -225,7 +225,7 @@ class FlappyEnv(gym.Env):
 
 		self.bg_pos = 0
 
-		self.observation = np.array([],dtype="float64")
+		self.observation = np.array([],dtype="float32")
 
 		self.reset()
 	
@@ -317,7 +317,7 @@ class FlappyEnv(gym.Env):
 
 		
 		dist = calc_distances(self.bird, self.pipe)
-		self.observation = np.array([dist['position'], dist['horizontal'], self.pipe.gap_pos, self.pipe.gap_pos + self.pipe.gap_size - self.bird.height],dtype="float64")
+		self.observation = np.array([dist['position'], dist['horizontal'], self.pipe.gap_pos, self.pipe.gap_pos + self.pipe.gap_size - self.bird.height],dtype="float32")
 
 
 		truncated = False
@@ -354,7 +354,7 @@ class FlappyEnv(gym.Env):
 
 
 		dist = calc_distances(self.bird, self.pipe)
-		self.observation = np.array([dist['position'], dist['horizontal'], self.pipe.gap_pos, self.pipe.gap_pos + self.pipe.gap_size - self.bird.height],dtype="float64")
+		self.observation = np.array([dist['position'], dist['horizontal'], self.pipe.gap_pos, self.pipe.gap_pos + self.pipe.gap_size - self.bird.height],dtype="float32")
 
 		observation = self.observation
 		info = {}
@@ -548,7 +548,7 @@ def handle_args():
 
 	global _DEBUG
 	try:
-		 _DEBUG = args.debug
+		_DEBUG = args.debug
 	except AttributeError:
 		_DEBUG = False
 
@@ -563,7 +563,6 @@ if __name__ == "__main__":
 	handle_args()
 
 
-# TODO: Investigate switching data type in observation to optimize memory usage (e.g., float8).
 # TODO: Provide support for hardware accelerators (TPU, CPU, GPU/CUDA) for training.
 # TODO: Rename function from 'learn' to 'train' for clarity and consistency.
 # TODO: Implement functionality to resume training from saved checkpoints.
