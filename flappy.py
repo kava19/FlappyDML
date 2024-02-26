@@ -14,6 +14,7 @@ from gymnasium import spaces
 from stable_baselines3 import A2C
 from stable_baselines3 import DQN
 from stable_baselines3 import PPO
+from stable_baselines3.common.env_checker import check_env
 
 
 _DEBUG = False
@@ -440,13 +441,14 @@ def create_model_save(name):
 	models_dir = f"models/{name}/"
 	logs_dir = f"logs/{name}/"
 
-	if model_save_exist(name):
-		models_dir = f"models/{name}-{int(time.time())}/"
-		logs_dir = f"logs/{name}-{int(time.time())}/"
+	if model_save_exist(name):		
+		name = f"{name}-{int(time.time())}"
+		models_dir = f"models/{name}"
+		logs_dir = f"logs/{name}/"
 
 	os.makedirs(models_dir)
 	os.makedirs(logs_dir)
-	return f"{name}-{int(time.time())}"
+	return f"{name}"
 
 def remove_model_save(name):
 	models_dir = f"models/{name}/"
@@ -543,6 +545,13 @@ def play():
 		flappy_env.render()
 		done = truncated or terminated 
 
+def test():
+	env = FlappyEnv()
+	check_env(env, skip_render_check = False)
+	learn(name = "test", alg = "PPO", episodes = 2, timestamps = 800, verbose = 1)
+	display(name = "test", timestamp = "latest", eps = 5)
+	remove_model_save("test")
+	
 
 
 def handle_args():
@@ -568,6 +577,9 @@ def handle_args():
 	# Subparser for the "play" command
 	parser_play = subparsers.add_parser("play", help="Play a game")
 	parser_play.add_argument("--debug", action="store_true", help="Enable debug mode")
+		
+	# Subparser for the "test" command
+	parser_test = subparsers.add_parser("test", help="Tests integration")
 
 	args = parser.parse_args()
 
@@ -583,6 +595,8 @@ def handle_args():
 		display(args.name, args.timestamp, args.eps)
 	elif args.command == "play":
 		play()
+	elif args.command == "test":
+		test()
 
 if __name__ == "__main__":
 	handle_args()
@@ -600,7 +614,6 @@ if __name__ == "__main__":
 # TODO: Address the bug related to the rotating bird behavior within the game.
 # TODO: Display distance metrics at key points such as after displaying results and human play.
 # TODO: Enable simultaneous gameplay for humans and AI agents.
-# TODO: Develop a function to check the environment setup.
 # TODO: Save mean reward information along with models for analysis and comparison.
 # TODO: Create a graphical user interface (GUI) for improved interaction and visualization.
 # TODO: Enhance SpriteManager to offer greater versatility and functionality.
