@@ -3,6 +3,7 @@ import sys
 import random
 import os
 import time
+import shutil
 
 import argparse
 import numpy as np
@@ -427,22 +428,44 @@ class FlappyEnv(gym.Env):
 
 
 
+def model_save_exist(name):
+	models_dir = f"models/{name}/"
+	logs_dir = f"logs/{name}/"
+	if os.path.exists(models_dir) or os.path.exists(logs_dir):
+		print(f"Name {name} already taken!")
+		return True
+	return False
+
+def create_model_save(name):
+	models_dir = f"models/{name}/"
+	logs_dir = f"logs/{name}/"
+
+	if model_save_exist(name):
+		models_dir = f"models/{name}-{int(time.time())}/"
+		logs_dir = f"logs/{name}-{int(time.time())}/"
+
+	os.makedirs(models_dir)
+	os.makedirs(logs_dir)
+	return f"{name}-{int(time.time())}"
+
+def remove_model_save(name):
+	models_dir = f"models/{name}/"
+	logs_dir = f"logs/{name}/"
+	try:
+		shutil.rmtree(models_dir)
+		shutil.rmtree(logs_dir)
+	except:
+		print("Directory already removed!")
+
 
 
 def learn(name = "default", alg = "PPO", episodes = 10, timestamps = 1000, verbose = 1):
 	env = FlappyEnv()
 	env.reset()
 
+	name = create_model_save(name)
 	models_dir = f"models/{name}/"
 	logs_dir = f"logs/{name}/"
-
-	if os.path.exists(models_dir) or os.path.exists(logs_dir):
-		print(f"Name {name} already taken!")
-		models_dir = f"models/{name}-{int(time.time())}/"
-		logs_dir = f"logs/{name}-{int(time.time())}/"
-
-	os.makedirs(models_dir)
-	os.makedirs(logs_dir)
 
 	'''import torch as th
 	policy_kwargs = dict(activation_fn=th.nn.ReLU,
@@ -511,6 +534,7 @@ def display(name = "default", timestamp = "latest", eps = 10):
 
 
 def play():
+	remove_model_save("test")
 	flappy_env = FlappyEnv("human", True)
 	flappy_env.reset()
 	done = False
@@ -518,6 +542,7 @@ def play():
 		observation, reward, terminated, truncated, info = flappy_env.step(0)
 		flappy_env.render()
 		done = truncated or terminated 
+
 
 
 def handle_args():
@@ -568,7 +593,6 @@ if __name__ == "__main__":
 # TODO: Implement functionality to resume training from saved checkpoints.
 # TODO: Refactor observation calculation to improve performance (e.g., replace dictionaries with tuples).
 # TODO: Add a function to clean all saved model files for better disk space management.
-# TODO: Implement a feature to remove specific saved models by name or identifier.
 # TODO: Allow customization of parameter size.
 # TODO: Add more training algorithm options.
 # TODO: Perform code cleanup and organization.
