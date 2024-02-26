@@ -528,8 +528,8 @@ def handle_args():
 	parser_learn = subparsers.add_parser("learn", help="Train a model")
 	parser_learn.add_argument("--name", default="default", help="Model name")
 	parser_learn.add_argument("--alg", default="PPO", help="Model algorithm")
-	parser_learn.add_argument("--eps", type=int, default=200, help="Number of episodes")
-	parser_learn.add_argument("--timestamps", type=int, default=100000, help="timestamp per episode")
+	parser_learn.add_argument("--eps", type=int, default=10, help="Number of episodes")
+	parser_learn.add_argument("--timestamps", type=int, default=1000, help="timestamp per episode")
 	parser_learn.add_argument("--verbose", type=int, default=1, help="Verbose level")
 	parser_learn.add_argument("--debug", action="store_true", help="Enable debug mode")
 
