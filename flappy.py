@@ -209,7 +209,7 @@ class FlappyEnv(gym.Env):
 		self.render_mode = render_mode
 
 		if human_control and render_mode == None:
-			self.human_contro = False
+			self.human_control = False
 			print("To use human control set render_mode to 'human'")
 
 		if not render_mode == None:
